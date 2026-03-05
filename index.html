@@ -1,0 +1,1738 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gestor de Productos Florales</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      font-family: "Manrope", system-ui, -apple-system, sans-serif;
+      color: #2c1b1d;
+      background: #faf7f5;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 32px 24px 40px;
+      background: radial-gradient(circle at 10% 10%, #ffe4e8 0%, transparent 55%),
+        radial-gradient(circle at 90% 15%, #e5f0ff 0%, transparent 50%),
+        radial-gradient(circle at 50% 100%, #fdf1e5 0%, transparent 45%),
+        linear-gradient(135deg, #fffdfb 0%, #f9f4f2 50%, #f6f1f7 100%);
+      min-height: 100vh;
+    }
+
+    h1, h2, h3, p {
+      margin: 0;
+    }
+
+    h1 {
+      font-family: "Fraunces", serif;
+      font-size: 2.2rem;
+      color: #4d2336;
+      letter-spacing: 0.4px;
+    }
+
+    h2 {
+      font-family: "Fraunces", serif;
+      color: #3d2a4e;
+    }
+
+    h3 {
+      font-family: "Fraunces", serif;
+      color: #4d2336;
+    }
+
+    .container {
+      max-width: 1180px;
+      margin: 0 auto;
+      display: grid;
+      gap: 24px;
+      grid-template-columns: 1.2fr 0.9fr;
+      align-items: start;
+    }
+
+    .panel {
+      background: rgba(255, 255, 255, 0.92);
+      border: 1px solid rgba(233, 216, 225, 0.7);
+      border-radius: 26px;
+      padding: 24px;
+      box-shadow: 0 24px 50px rgba(94, 61, 90, 0.12);
+      backdrop-filter: blur(8px);
+      animation: rise 0.6s ease both;
+    }
+
+    .phase {
+      margin-top: 16px;
+      border-radius: 22px;
+      border: 1px solid rgba(233, 216, 225, 0.7);
+      background: linear-gradient(135deg, #fff9fb 0%, #fffdf8 100%);
+      padding: 16px 18px;
+      display: grid;
+      gap: 12px;
+      position: relative;
+    }
+
+    .phase + .phase {
+      margin-top: 18px;
+    }
+
+    .phase-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      justify-content: space-between;
+      flex-wrap: wrap;
+    }
+
+    .phase-title {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .phase-badge {
+      width: 34px;
+      height: 34px;
+      border-radius: 12px;
+      display: grid;
+      place-items: center;
+      font-weight: 700;
+      color: #fff;
+      background: linear-gradient(135deg, #e16885 0%, #b563d6 100%);
+      box-shadow: 0 10px 20px rgba(196, 98, 135, 0.25);
+    }
+
+    .phase-subtitle {
+      color: #8a5a6d;
+      font-size: 0.9rem;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 12px;
+      margin-top: 12px;
+    }
+
+    label {
+      display: grid;
+      gap: 6px;
+      font-size: 0.88rem;
+      color: #7a4a5c;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    input,
+    select {
+      width: 100%;
+      border: 1px solid #ecdde3;
+      border-radius: 16px;
+      padding: 12px 14px;
+      font-size: 0.98rem;
+      background: #ffffff;
+      color: #2c1b1d;
+      box-shadow: inset 0 0 0 1px rgba(252, 248, 249, 0.8);
+      transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+    }
+
+    input:focus,
+    select:focus {
+      border-color: #e98da2;
+      outline: 3px solid rgba(233, 141, 162, 0.2);
+      transform: translateY(-1px);
+    }
+
+    .subproduct-inputs {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 10px;
+      margin-top: 12px;
+      align-items: end;
+    }
+
+    .btn {
+      border: 0;
+      border-radius: 999px;
+      padding: 11px 20px;
+      font-weight: 600;
+      cursor: pointer;
+      color: #5d2f3d;
+      background: #fff5f8;
+      box-shadow: 0 12px 22px rgba(212, 132, 160, 0.16);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .btn.primary {
+      color: #ffffff;
+      background: linear-gradient(135deg, #e16885 0%, #b563d6 100%);
+      box-shadow: 0 14px 28px rgba(196, 98, 135, 0.35);
+    }
+
+    .btn.warn {
+      color: #ffffff;
+      background: linear-gradient(135deg, #e85b78 0%, #b4223f 100%);
+    }
+
+    .btn.secondary {
+      background: #efe7f4;
+      color: #4a2c5b;
+    }
+
+    .btn.accent {
+      background: linear-gradient(135deg, #f5a54a 0%, #e36a8b 100%);
+      color: #ffffff;
+      box-shadow: 0 14px 26px rgba(245, 165, 74, 0.28);
+    }
+
+    .btn.utility {
+      background: #fff0f5;
+      color: #7a3c54;
+      border: 1px solid rgba(225, 104, 133, 0.25);
+      box-shadow: none;
+    }
+
+    .btn.subtle {
+      background: #f6f1f7;
+      color: #5c3a55;
+      box-shadow: none;
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 16px 30px rgba(196, 98, 135, 0.22);
+    }
+
+    .btn:active {
+      transform: translateY(1px);
+    }
+
+    .stack {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .subproduct-list {
+      margin-top: 14px;
+      display: grid;
+      gap: 10px;
+    }
+
+    .item-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border: 1px solid #f1dfe6;
+      border-radius: 18px;
+      padding: 14px 16px;
+      gap: 10px;
+      background: linear-gradient(135deg, #fff7f8 0%, #fffaf5 100%);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .item-row:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 10px 20px rgba(94, 61, 90, 0.12);
+    }
+
+    .item-text {
+      display: grid;
+      gap: 4px;
+    }
+
+    .item-sub {
+      color: #825466;
+      font-size: 0.86rem;
+    }
+
+    .summary {
+      margin-top: 12px;
+      display: grid;
+      gap: 8px;
+      border: 1px solid #f0cfd8;
+      background: linear-gradient(135deg, #fff3f4 0%, #fdf6ff 100%);
+      border-radius: 18px;
+      padding: 16px 18px;
+    }
+
+    .summary-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .summary-row.total {
+      font-weight: 700;
+      color: #7a2f6a;
+      padding-top: 6px;
+      border-top: 1px solid rgba(122, 47, 106, 0.2);
+    }
+
+    .products {
+      display: grid;
+      gap: 14px;
+      margin-top: 14px;
+    }
+
+    .product-card {
+      border: 1px solid #f0dee6;
+      border-radius: 22px;
+      padding: 16px 18px;
+      display: grid;
+      gap: 12px;
+      background: linear-gradient(135deg, #ffffff 0%, #fff9fb 100%);
+      box-shadow: 0 16px 30px rgba(94, 61, 90, 0.14);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .product-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 20px 36px rgba(94, 61, 90, 0.2);
+    }
+
+    .product-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .product-sub {
+      color: #8a5c6f;
+      font-size: 0.92rem;
+    }
+
+    .empty {
+      color: #9c7283;
+      margin-top: 10px;
+    }
+
+    .hero {
+      display: grid;
+      gap: 16px;
+      margin-bottom: 14px;
+    }
+
+    .hero-title {
+      display: grid;
+      gap: 10px;
+    }
+
+    .tag {
+      display: inline-flex;
+      width: fit-content;
+      padding: 6px 14px;
+      border-radius: 999px;
+      background: #fff0f5;
+      color: #8f3a5f;
+      font-size: 0.74rem;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+    }
+
+    .hero-sub {
+      color: #6f4b5a;
+      font-size: 1.02rem;
+      line-height: 1.5;
+      max-width: 560px;
+    }
+
+    .hero-card {
+      border-radius: 20px;
+      padding: 16px 18px;
+      background: linear-gradient(130deg, #fff7f2 0%, #f7f1ff 100%);
+      border: 1px solid rgba(226, 210, 219, 0.8);
+      display: grid;
+      gap: 10px;
+      animation: float 6s ease-in-out infinite;
+    }
+
+    .hero-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: grid;
+      gap: 6px;
+      color: #7a4a5c;
+      font-size: 0.9rem;
+    }
+
+    .hero-list li {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .hero-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #e16885;
+      box-shadow: 0 0 0 4px rgba(225, 104, 133, 0.16);
+    }
+
+    .hero-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .theme-toggle {
+      border: 1px solid rgba(225, 104, 133, 0.2);
+      background: #fff5f8;
+      color: #6b3449;
+      padding: 8px 16px;
+      border-radius: 999px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+    }
+
+    .theme-toggle:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 12px 20px rgba(225, 104, 133, 0.2);
+    }
+
+    .inventory-section {
+      margin-top: 18px;
+      display: grid;
+      gap: 12px;
+    }
+
+    .inventory-list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .inventory-row {
+      display: grid;
+      grid-template-columns: 1.4fr 1fr auto;
+      gap: 12px;
+      align-items: center;
+      padding: 14px 16px;
+      border-radius: 18px;
+      border: 1px solid #f1dfe6;
+      background: #ffffff;
+      box-shadow: 0 10px 20px rgba(94, 61, 90, 0.08);
+    }
+
+    .inventory-info {
+      display: grid;
+      gap: 6px;
+    }
+
+    .inventory-name {
+      font-weight: 700;
+      color: #4d2336;
+    }
+
+    .inventory-meta {
+      color: #7a4a5c;
+      font-size: 0.86rem;
+    }
+
+    .inventory-actions {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      justify-content: flex-end;
+      flex-wrap: wrap;
+    }
+
+    .input-inline {
+      max-width: 160px;
+    }
+
+    .inventory-trigger {
+      margin-top: 12px;
+    }
+
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(20, 12, 18, 0.45);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      z-index: 50;
+      backdrop-filter: blur(4px);
+    }
+
+    .modal-overlay.active {
+      display: flex;
+      animation: fadeIn 0.2s ease;
+    }
+
+    .modal-card {
+      width: min(1000px, 100%);
+      max-height: 85vh;
+      overflow: hidden;
+      background: #fffdfb;
+      border-radius: 24px;
+      border: 1px solid rgba(233, 216, 225, 0.8);
+      box-shadow: 0 30px 60px rgba(32, 20, 31, 0.25);
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      animation: rise 0.3s ease;
+    }
+
+    .modal-header {
+      padding: 18px 22px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      border-bottom: 1px solid rgba(233, 216, 225, 0.6);
+      background: linear-gradient(120deg, #fff7f8 0%, #f7f1ff 100%);
+    }
+
+    .modal-title {
+      font-family: "Fraunces", serif;
+      font-size: 1.4rem;
+      color: #4d2336;
+    }
+
+    .modal-body {
+      padding: 18px 22px 22px;
+      overflow: auto;
+      display: grid;
+      gap: 12px;
+      background: #fffdfb;
+    }
+
+    .modal-footer {
+      padding: 14px 22px 18px;
+      border-top: 1px solid rgba(233, 216, 225, 0.6);
+      display: flex;
+      justify-content: flex-end;
+      background: #fff7fb;
+      gap: 10px;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+
+    [data-theme="dark"] {
+      color: #f3e8f2;
+      background: #0f0b12;
+    }
+
+    [data-theme="dark"] body {
+      background: radial-gradient(circle at 15% 15%, #2a1623 0%, transparent 55%),
+        radial-gradient(circle at 85% 10%, #162034 0%, transparent 50%),
+        radial-gradient(circle at 50% 90%, #2b1b2f 0%, transparent 55%),
+        linear-gradient(135deg, #0c0a10 0%, #120d18 50%, #0d0b12 100%);
+    }
+
+    [data-theme="dark"] .panel {
+      background: rgba(18, 13, 24, 0.92);
+      border-color: rgba(82, 53, 76, 0.6);
+      box-shadow: 0 24px 50px rgba(0, 0, 0, 0.35);
+    }
+
+    [data-theme="dark"] label {
+      color: #c9a6b7;
+    }
+
+    [data-theme="dark"] input,
+    [data-theme="dark"] select {
+      background: #1b1321;
+      border-color: #3a2134;
+      color: #f6e9f0;
+      box-shadow: inset 0 0 0 1px rgba(38, 24, 36, 0.8);
+    }
+
+    [data-theme="dark"] .btn {
+      background: #2a1930;
+      color: #f0cfe0;
+      box-shadow: 0 12px 22px rgba(0, 0, 0, 0.35);
+    }
+
+    [data-theme="dark"] .btn.primary {
+      background: linear-gradient(135deg, #b04c76 0%, #6d3aa8 100%);
+    }
+
+    [data-theme="dark"] .btn.secondary {
+      background: #24162b;
+      color: #e0c7f1;
+    }
+
+    [data-theme="dark"] .btn.warn {
+      background: linear-gradient(135deg, #c64a63 0%, #7b1b32 100%);
+    }
+
+    [data-theme="dark"] .btn.accent {
+      background: linear-gradient(135deg, #d1853c 0%, #9a3b67 100%);
+      color: #fff2e5;
+    }
+
+    [data-theme="dark"] .btn.utility,
+    [data-theme="dark"] .btn.subtle {
+      background: #1b1321;
+      color: #e6c6d8;
+      border-color: rgba(196, 98, 135, 0.35);
+    }
+
+    [data-theme="dark"] .item-row,
+    [data-theme="dark"] .inventory-row,
+    [data-theme="dark"] .product-card,
+    [data-theme="dark"] .hero-card,
+    [data-theme="dark"] .summary {
+      background: linear-gradient(135deg, #1c1223 0%, #24132b 100%);
+      border-color: rgba(76, 43, 70, 0.6);
+    }
+
+    [data-theme="dark"] .phase {
+      background: linear-gradient(135deg, #1a101f 0%, #221429 100%);
+      border-color: rgba(76, 43, 70, 0.6);
+    }
+
+    [data-theme="dark"] .product-sub,
+    [data-theme="dark"] .item-sub,
+    [data-theme="dark"] .inventory-meta,
+    [data-theme="dark"] .hero-sub {
+      color: #d9b7c6;
+    }
+
+    [data-theme="dark"] .tag {
+      background: rgba(110, 52, 90, 0.4);
+      color: #f3cad9;
+    }
+
+    [data-theme="dark"] h1,
+    [data-theme="dark"] h2,
+    [data-theme="dark"] h3,
+    [data-theme="dark"] .inventory-name {
+      color: #f6d7e6;
+    }
+
+    [data-theme="dark"] .theme-toggle {
+      background: #261626;
+      color: #f3c7da;
+      border-color: rgba(196, 98, 135, 0.35);
+    }
+
+    [data-theme="dark"] .modal-overlay {
+      background: rgba(8, 6, 10, 0.65);
+    }
+
+    [data-theme="dark"] .modal-card {
+      background: #130d18;
+      border-color: rgba(82, 53, 76, 0.6);
+    }
+
+    [data-theme="dark"] .modal-header,
+    [data-theme="dark"] .modal-footer {
+      background: #19101f;
+      border-color: rgba(82, 53, 76, 0.5);
+    }
+
+    [data-theme="dark"] .modal-title {
+      color: #f6d7e6;
+    }
+
+    @keyframes float {
+      0%,
+      100% {
+        transform: translateY(0);
+      }
+      50% {
+        transform: translateY(-6px);
+      }
+    }
+
+    @keyframes rise {
+      from {
+        opacity: 0;
+        transform: translateY(12px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @media (max-width: 1100px) {
+      .container {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 700px) {
+      .subproduct-inputs {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="container">
+    <section class="panel">
+      <div class="hero">
+        <div class="hero-title">
+          <div class="hero-row">
+          <span class="tag">FLORIDETALLES</span>
+          <button id="themeToggle" class="theme-toggle" type="button">Modo oscuro</button>
+          </div>
+          <h1>Gestión de Productos</h1>
+          <p class="hero-sub">Crea arreglos con subproductos, costos precisos y mano de obra. El total siempre se calcula automáticamente.</p>
+        </div>
+        <div class="hero-card">
+          <strong>Elegancia con control total</strong>
+          <ul class="hero-list">
+            <li><span class="hero-dot"></span>Inventario inteligente con autocompletado.</li>
+            <li><span class="hero-dot"></span>Costos por unidad y subtotal en segundos.</li>
+            <li><span class="hero-dot"></span>Productos guardados listos para futuras ventas.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="phase">
+        <div class="phase-header">
+          <div class="phase-title">
+            <div class="phase-badge">1</div>
+            <div>
+              <h3>Datos del producto</h3>
+              <div class="phase-subtitle">Define el nombre y la mano de obra.</div>
+            </div>
+          </div>
+        </div>
+        <div class="form-grid">
+          <label>
+            Nombre del producto
+            <input id="productName" type="text" placeholder="Ej. Arreglo Primavera">
+          </label>
+          <label>
+            Horas de mano de obra
+            <input id="laborHours" type="number" min="0" step="0.01" value="0">
+          </label>
+          <label>
+            Costo por hora de mano de obra
+            <input id="laborRate" type="number" min="0" step="0.01" value="0">
+          </label>
+        </div>
+      </div>
+
+      <div class="phase">
+        <div class="phase-header">
+          <div class="phase-title">
+            <div class="phase-badge">2</div>
+            <div>
+              <h3>Subproductos</h3>
+              <div class="phase-subtitle">Agrega insumos y cantidades usadas.</div>
+            </div>
+          </div>
+          <button id="openInventoryBtn" class="btn utility" type="button">Abrir inventario</button>
+        </div>
+        <div class="subproduct-inputs">
+          <label>
+            Nombre
+            <input id="subName" type="text" list="subNameList" placeholder="Busca o escribe">
+            <datalist id="subNameList"></datalist>
+          </label>
+          <label>
+            Tipo
+            <input id="subType" type="text" placeholder="Paquete o Unidad">
+          </label>
+          <label>
+            Cantidad que trae
+            <input id="subPackQty" type="number" min="0" step="0.01" value="1">
+          </label>
+          <label>
+            Unidad medida
+            <input id="subUnitMeasure" type="text" placeholder="Gramos o Unidad">
+          </label>
+          <label>
+            Precio compra (COP)
+            <input id="subPurchasePrice" type="number" min="0" step="0.01" value="0">
+          </label>
+          <label>
+            Cantidad usada
+            <input id="subUsedQty" type="number" min="0" step="0.01" value="1">
+          </label>
+          <button id="addSubBtn" class="btn primary" type="button">Agregar subproducto</button>
+          <button id="saveInventoryBtn" class="btn accent" type="button">Guardar en inventario</button>
+        </div>
+
+        <div id="subproductList" class="subproduct-list"></div>
+      </div>
+
+      <div class="phase">
+        <div class="phase-header">
+          <div class="phase-title">
+            <div class="phase-badge">3</div>
+            <div>
+              <h3>Totales</h3>
+              <div class="phase-subtitle">Revisa los costos calculados.</div>
+            </div>
+          </div>
+        </div>
+        <div id="summary" class="summary"></div>
+      </div>
+
+      <div class="phase">
+        <div class="phase-header">
+          <div class="phase-title">
+            <div class="phase-badge">4</div>
+            <div>
+              <h3>Acciones finales</h3>
+              <div class="phase-subtitle">Guarda o reinicia el producto.</div>
+            </div>
+          </div>
+        </div>
+        <div class="stack">
+          <button id="saveBtn" class="btn primary" type="button">Guardar producto</button>
+          <button id="newBtn" class="btn secondary" type="button">Nuevo producto</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>Productos guardados</h2>
+      <p class="product-sub">Puedes cargar un producto para agregar o eliminar subproductos, y también eliminarlo.</p>
+      <div id="productsContainer" class="products"></div>
+    </section>
+  </main>
+
+  <div id="inventoryModal" class="modal-overlay" aria-hidden="true">
+    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="inventoryTitle">
+      <div class="modal-header">
+        <div class="modal-title" id="inventoryTitle">Inventario de subproductos</div>
+        <button id="closeInventoryBtn" class="btn subtle" type="button">Cerrar</button>
+      </div>
+      <div class="modal-body">
+        <div id="inventoryList" class="inventory-list"></div>
+      </div>
+      <div class="modal-footer">
+        <button id="closeInventoryBtnFooter" class="btn primary" type="button">Listo</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="productModal" class="modal-overlay" aria-hidden="true">
+    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="productTitle">
+      <div class="modal-header">
+        <div class="modal-title" id="productTitle">Editar producto</div>
+        <button id="closeProductBtn" class="btn subtle" type="button">Cerrar</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-grid">
+          <label>
+            Nombre del producto
+            <input id="modalProductName" type="text" placeholder="Ej. Arreglo Primavera">
+          </label>
+          <label>
+            Horas de mano de obra
+            <input id="modalLaborHours" type="number" min="0" step="0.01" value="0">
+          </label>
+          <label>
+            Costo por hora de mano de obra
+            <input id="modalLaborRate" type="number" min="0" step="0.01" value="0">
+          </label>
+        </div>
+
+        <h3 style="margin-top:16px;">Subproductos</h3>
+        <div class="subproduct-inputs">
+          <label>
+            Nombre
+            <input id="modalSubName" type="text" list="modalSubNameList" placeholder="Busca o escribe">
+            <datalist id="modalSubNameList"></datalist>
+          </label>
+          <label>
+            Tipo
+            <input id="modalSubType" type="text" placeholder="Paquete o Unidad">
+          </label>
+          <label>
+            Cantidad que trae
+            <input id="modalSubPackQty" type="number" min="0" step="0.01" value="1">
+          </label>
+          <label>
+            Unidad medida
+            <input id="modalSubUnitMeasure" type="text" placeholder="Gramos o Unidad">
+          </label>
+          <label>
+            Precio compra (COP)
+            <input id="modalSubPurchasePrice" type="number" min="0" step="0.01" value="0">
+          </label>
+          <label>
+            Cantidad usada
+            <input id="modalSubUsedQty" type="number" min="0" step="0.01" value="1">
+          </label>
+          <button id="modalAddSubBtn" class="btn primary" type="button">Agregar subproducto</button>
+        </div>
+
+        <div id="modalSubproductList" class="subproduct-list"></div>
+        <div id="modalSummary" class="summary"></div>
+      </div>
+      <div class="modal-footer">
+        <button id="saveProductModalBtn" class="btn primary" type="button">Guardar cambios</button>
+        <button id="closeProductBtnFooter" class="btn subtle" type="button">Listo</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const STORAGE_KEY = "floral_products_v1";
+    const INVENTORY_FILE = "INVENTARIO Y COSTOS-Tabla 1.csv";
+    const CUSTOM_INVENTORY_KEY = "inventory_custom_v1";
+    const DELETED_INVENTORY_KEY = "inventory_deleted_v1";
+    const PRODUCTS_API = "/api/products";
+    const INVENTORY_API = "/api/inventory";
+
+    const state = {
+      products: [],
+      editingId: null,
+      currentSubproducts: [],
+      inventory: [],
+      modalEditingId: null,
+      modalSubproducts: []
+    };
+
+    const el = {
+      productName: document.getElementById("productName"),
+      laborHours: document.getElementById("laborHours"),
+      laborRate: document.getElementById("laborRate"),
+      subName: document.getElementById("subName"),
+      subNameList: document.getElementById("subNameList"),
+      subType: document.getElementById("subType"),
+      subPackQty: document.getElementById("subPackQty"),
+      subUnitMeasure: document.getElementById("subUnitMeasure"),
+      subPurchasePrice: document.getElementById("subPurchasePrice"),
+      subUsedQty: document.getElementById("subUsedQty"),
+      addSubBtn: document.getElementById("addSubBtn"),
+      saveInventoryBtn: document.getElementById("saveInventoryBtn"),
+      saveBtn: document.getElementById("saveBtn"),
+      newBtn: document.getElementById("newBtn"),
+      subproductList: document.getElementById("subproductList"),
+      summary: document.getElementById("summary"),
+      productsContainer: document.getElementById("productsContainer"),
+      inventoryList: document.getElementById("inventoryList"),
+      themeToggle: document.getElementById("themeToggle"),
+      inventoryModal: document.getElementById("inventoryModal"),
+      openInventoryBtn: document.getElementById("openInventoryBtn"),
+      closeInventoryBtn: document.getElementById("closeInventoryBtn"),
+      closeInventoryBtnFooter: document.getElementById("closeInventoryBtnFooter"),
+      productModal: document.getElementById("productModal"),
+      closeProductBtn: document.getElementById("closeProductBtn"),
+      closeProductBtnFooter: document.getElementById("closeProductBtnFooter"),
+      modalProductName: document.getElementById("modalProductName"),
+      modalLaborHours: document.getElementById("modalLaborHours"),
+      modalLaborRate: document.getElementById("modalLaborRate"),
+      modalSubName: document.getElementById("modalSubName"),
+      modalSubNameList: document.getElementById("modalSubNameList"),
+      modalSubType: document.getElementById("modalSubType"),
+      modalSubPackQty: document.getElementById("modalSubPackQty"),
+      modalSubUnitMeasure: document.getElementById("modalSubUnitMeasure"),
+      modalSubPurchasePrice: document.getElementById("modalSubPurchasePrice"),
+      modalSubUsedQty: document.getElementById("modalSubUsedQty"),
+      modalAddSubBtn: document.getElementById("modalAddSubBtn"),
+      modalSubproductList: document.getElementById("modalSubproductList"),
+      modalSummary: document.getElementById("modalSummary"),
+      saveProductModalBtn: document.getElementById("saveProductModalBtn")
+    };
+
+    const formatMoney = (amount) =>
+      new Intl.NumberFormat("es-CO", { style: "currency", currency: "COP", maximumFractionDigits: 2 }).format(amount);
+
+    const toPositiveNumber = (value) => {
+      const n = Number(value);
+      return Number.isFinite(n) && n >= 0 ? n : 0;
+    };
+
+    const calculateUnitCost = (packQty, purchasePrice) => {
+      if (packQty <= 0) return 0;
+      return purchasePrice / packQty;
+    };
+
+    const parseCsvNumber = (value) => {
+      if (!value) return 0;
+      const cleaned = value.replace(/\s/g, "").replace(/\./g, "").replace(",", ".");
+      const n = Number(cleaned);
+      return Number.isFinite(n) ? n : 0;
+    };
+
+    const parseInventoryCsv = (text) => {
+      const lines = text.split(/\r?\n/).filter((line) => line.trim().length > 0);
+      if (lines.length <= 1) return [];
+      const items = [];
+      for (let i = 1; i < lines.length; i += 1) {
+        const parts = lines[i].split(";");
+        const name = (parts[0] || "").trim();
+        if (!name) continue;
+        items.push({
+          name,
+          type: (parts[1] || "").trim(),
+          presentation: (parts[2] || "").trim(),
+          packQty: parseCsvNumber(parts[3]),
+          unitMeasure: (parts[4] || "").trim(),
+          purchasePrice: parseCsvNumber(parts[5])
+        });
+      }
+      return items;
+    };
+
+    const renderInventoryOptions = () => {
+      el.subNameList.innerHTML = "";
+      el.modalSubNameList.innerHTML = "";
+      state.inventory.forEach((item) => {
+        const option = document.createElement("option");
+        option.value = item.name;
+        el.subNameList.appendChild(option);
+        const modalOption = document.createElement("option");
+        modalOption.value = item.name;
+        el.modalSubNameList.appendChild(modalOption);
+      });
+    };
+
+    const applyInventoryItemToForm = (item) => {
+      if (!item) return;
+      el.subType.value = item.type;
+      el.subPackQty.value = item.packQty ? String(item.packQty) : "1";
+      el.subUnitMeasure.value = item.unitMeasure;
+      el.subPurchasePrice.value = item.purchasePrice ? String(item.purchasePrice) : "0";
+    };
+
+    const handleInventoryChange = () => {
+      const selectedName = el.subName.value.trim();
+      const item = state.inventory.find((entry) => entry.name === selectedName);
+      applyInventoryItemToForm(item);
+    };
+
+    const applyInventoryItemToModalForm = (item) => {
+      if (!item) return;
+      el.modalSubType.value = item.type;
+      el.modalSubPackQty.value = item.packQty ? String(item.packQty) : "1";
+      el.modalSubUnitMeasure.value = item.unitMeasure;
+      el.modalSubPurchasePrice.value = item.purchasePrice ? String(item.purchasePrice) : "0";
+    };
+
+    const handleModalInventoryChange = () => {
+      const selectedName = el.modalSubName.value.trim();
+      const item = state.inventory.find((entry) => entry.name === selectedName);
+      applyInventoryItemToModalForm(item);
+    };
+
+    const getCustomInventoryFromStorage = () => {
+      const raw = localStorage.getItem(CUSTOM_INVENTORY_KEY);
+      if (!raw) return [];
+      try {
+        const parsed = JSON.parse(raw);
+        return Array.isArray(parsed) ? parsed : [];
+      } catch (_) {
+        return [];
+      }
+    };
+
+    const setCustomInventoryInStorage = (items) => {
+      localStorage.setItem(CUSTOM_INVENTORY_KEY, JSON.stringify(items));
+    };
+
+    const getDeletedInventoryFromStorage = () => {
+      const raw = localStorage.getItem(DELETED_INVENTORY_KEY);
+      if (!raw) return [];
+      try {
+        const parsed = JSON.parse(raw);
+        return Array.isArray(parsed) ? parsed : [];
+      } catch (_) {
+        return [];
+      }
+    };
+
+    const setDeletedInventoryInStorage = (items) => {
+      localStorage.setItem(DELETED_INVENTORY_KEY, JSON.stringify(items));
+    };
+
+    const encodeKey = (value) => encodeURIComponent(value);
+    const decodeKey = (value) => decodeURIComponent(value);
+
+    const normalizeInventory = (items) => {
+      const map = new Map();
+      items.forEach((item) => {
+        const key = String(item.name || "").toLowerCase();
+        if (!key) return;
+        map.set(key, { ...item, name: String(item.name || "").trim() });
+      });
+      return Array.from(map.values()).sort((a, b) => a.name.localeCompare(b.name, "es"));
+    };
+
+    const calculateTotals = (subproducts, laborHours, laborRate) => {
+      const subproductsTotal = subproducts.reduce((sum, item) => sum + item.usedQty * item.unitCost, 0);
+      const laborTotal = laborHours * laborRate;
+      return {
+        subproductsTotal,
+        laborTotal,
+        grandTotal: subproductsTotal + laborTotal
+      };
+    };
+
+    const saveToStorage = () => {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state.products));
+    };
+
+    const normalizeProducts = (items) =>
+      items.map((product) => {
+        const subproducts = Array.isArray(product.subproducts)
+          ? product.subproducts.map((sub) => ({
+              id: String(sub.id || crypto.randomUUID()),
+              name: String(sub.name || ""),
+              type: String(sub.type || ""),
+              packQty: toPositiveNumber(sub.packQty),
+              unitMeasure: String(sub.unitMeasure || ""),
+              purchasePrice: toPositiveNumber(sub.purchasePrice),
+              usedQty: toPositiveNumber(sub.usedQty)
+            }))
+          : [];
+        return {
+          id: String(product.id || crypto.randomUUID()),
+          name: String(product.name || ""),
+          laborHours: toPositiveNumber(product.laborHours),
+          laborRate: toPositiveNumber(product.laborRate),
+          subproducts: subproducts.map((sub) => ({
+            ...sub,
+            unitCost: calculateUnitCost(sub.packQty, sub.purchasePrice)
+          }))
+        };
+      });
+
+    const loadProducts = async () => {
+      try {
+        const response = await fetch(PRODUCTS_API);
+        if (response.ok) {
+          const data = await response.json();
+          state.products = normalizeProducts(Array.isArray(data.items) ? data.items : []);
+          return;
+        }
+      } catch (_) {}
+
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) return;
+      try {
+        const parsed = JSON.parse(raw);
+        if (Array.isArray(parsed)) {
+          state.products = normalizeProducts(parsed);
+        }
+      } catch (_) {
+        state.products = [];
+      }
+    };
+
+    const clearForm = () => {
+      state.editingId = null;
+      state.currentSubproducts = [];
+      el.productName.value = "";
+      el.laborHours.value = "0";
+      el.laborRate.value = "0";
+      el.subName.value = "";
+      el.subType.value = "";
+      el.subPackQty.value = "1";
+      el.subUnitMeasure.value = "";
+      el.subPurchasePrice.value = "0";
+      el.subUsedQty.value = "1";
+      renderEditor();
+    };
+
+    const renderSummary = () => {
+      const laborHours = toPositiveNumber(el.laborHours.value);
+      const laborRate = toPositiveNumber(el.laborRate.value);
+      const { subproductsTotal, laborTotal, grandTotal } = calculateTotals(
+        state.currentSubproducts,
+        laborHours,
+        laborRate
+      );
+
+      el.summary.innerHTML = `
+        <div class="summary-row"><span>Total subproductos</span><strong>${formatMoney(subproductsTotal)}</strong></div>
+        <div class="summary-row"><span>Total mano de obra</span><strong>${formatMoney(laborTotal)}</strong></div>
+        <div class="summary-row total"><span>Total producto</span><strong>${formatMoney(grandTotal)}</strong></div>
+      `;
+    };
+
+    const renderModalSummary = () => {
+      const laborHours = toPositiveNumber(el.modalLaborHours.value);
+      const laborRate = toPositiveNumber(el.modalLaborRate.value);
+      const { subproductsTotal, laborTotal, grandTotal } = calculateTotals(
+        state.modalSubproducts,
+        laborHours,
+        laborRate
+      );
+
+      el.modalSummary.innerHTML = `
+        <div class="summary-row"><span>Total subproductos</span><strong>${formatMoney(subproductsTotal)}</strong></div>
+        <div class="summary-row"><span>Total mano de obra</span><strong>${formatMoney(laborTotal)}</strong></div>
+        <div class="summary-row total"><span>Total producto</span><strong>${formatMoney(grandTotal)}</strong></div>
+      `;
+    };
+
+    const renderSubproductList = () => {
+      if (state.currentSubproducts.length === 0) {
+        el.subproductList.innerHTML = `<p class="empty">Aún no has agregado subproductos.</p>`;
+        return;
+      }
+
+      el.subproductList.innerHTML = state.currentSubproducts
+        .map((item) => {
+          const subtotal = item.usedQty * item.unitCost;
+          return `
+            <div class="item-row">
+              <div class="item-text">
+                <strong>${item.name}</strong>
+                <span class="item-sub">${item.type || "Tipo no definido"} · ${item.packQty} ${item.unitMeasure || "unidad"} · Compra ${formatMoney(
+                  item.purchasePrice
+                )}</span>
+                <span class="item-sub">Costo unidad: ${formatMoney(item.unitCost)} · Usado ${item.usedQty} ${item.unitMeasure || "unidad"} · Subtotal ${formatMoney(
+                  subtotal
+                )}</span>
+              </div>
+              <button class="btn warn" type="button" data-remove-sub="${item.id}">Eliminar</button>
+            </div>
+          `;
+        })
+        .join("");
+    };
+
+    const renderModalSubproductList = () => {
+      if (state.modalSubproducts.length === 0) {
+        el.modalSubproductList.innerHTML = `<p class="empty">Aún no has agregado subproductos.</p>`;
+        return;
+      }
+
+      el.modalSubproductList.innerHTML = state.modalSubproducts
+        .map((item) => {
+          const subtotal = item.usedQty * item.unitCost;
+          return `
+            <div class="item-row">
+              <div class="item-text">
+                <strong>${item.name}</strong>
+                <span class="item-sub">${item.type || "Tipo no definido"} · ${item.packQty} ${item.unitMeasure || "unidad"} · Compra ${formatMoney(
+                  item.purchasePrice
+                )}</span>
+                <span class="item-sub">Costo unidad: ${formatMoney(item.unitCost)} · Usado ${item.usedQty} ${item.unitMeasure || "unidad"} · Subtotal ${formatMoney(
+                  subtotal
+                )}</span>
+              </div>
+              <button class="btn warn" type="button" data-remove-modal-sub="${item.id}">Eliminar</button>
+            </div>
+          `;
+        })
+        .join("");
+    };
+
+    const renderInventoryList = () => {
+      if (!state.inventory.length) {
+        el.inventoryList.innerHTML = `<p class="empty">No hay subproductos en inventario.</p>`;
+        return;
+      }
+
+      el.inventoryList.innerHTML = state.inventory
+        .map((item) => {
+          const key = encodeKey(item.name);
+          const unitLabel = item.unitMeasure || "unidad";
+          return `
+            <div class="inventory-row">
+              <div class="inventory-info">
+                <div class="inventory-name">${item.name}</div>
+                <div class="inventory-meta">${item.type || "Tipo no definido"} · ${item.packQty} ${unitLabel}</div>
+              </div>
+              <label>
+                Precio compra (COP)
+                <input class="input-inline" type="number" min="0" step="0.01" value="${item.purchasePrice || 0}" data-price-key="${key}">
+              </label>
+              <div class="inventory-actions">
+                <button class="btn secondary" type="button" data-action="save" data-key="${key}">Guardar</button>
+                <button class="btn warn" type="button" data-action="delete" data-key="${key}">Eliminar</button>
+              </div>
+            </div>
+          `;
+        })
+        .join("");
+    };
+
+    const renderProducts = () => {
+      if (state.products.length === 0) {
+        el.productsContainer.innerHTML = `<p class="empty">No hay productos guardados.</p>`;
+        return;
+      }
+
+      el.productsContainer.innerHTML = state.products
+        .map((product) => {
+          const totals = calculateTotals(product.subproducts, product.laborHours, product.laborRate);
+          const subList = product.subproducts.length
+            ? product.subproducts
+                .map(
+                  (sub) =>
+                    `<div class="item-sub">• ${sub.name} (${sub.type || "Tipo no definido"}): ${sub.usedQty} ${
+                      sub.unitMeasure || "unidad"
+                    } × ${formatMoney(sub.unitCost)} = ${formatMoney(sub.usedQty * sub.unitCost)}</div>`
+                )
+                .join("")
+            : `<div class="item-sub">Sin subproductos</div>`;
+
+          return `
+            <article class="product-card">
+              <div class="product-header">
+                <div>
+                  <h3>${product.name || "Producto sin nombre"}</h3>
+                  <div class="product-sub">Mano de obra: ${product.laborHours} h × ${formatMoney(product.laborRate)} = ${formatMoney(
+                    totals.laborTotal
+                  )}</div>
+                  <div><strong>Total: ${formatMoney(totals.grandTotal)}</strong></div>
+                </div>
+                <div class="stack" style="margin-top:0;">
+                  <button class="btn secondary" type="button" data-edit-product="${product.id}">Editar</button>
+                  <button class="btn warn" type="button" data-delete-product="${product.id}">Eliminar</button>
+                </div>
+              </div>
+              <div>${subList}</div>
+            </article>
+          `;
+        })
+        .join("");
+    };
+
+    const renderEditor = () => {
+      renderSubproductList();
+      renderSummary();
+      renderProducts();
+      el.saveBtn.textContent = state.editingId ? "Actualizar producto" : "Guardar producto";
+    };
+
+    const addSubproduct = () => {
+      const name = el.subName.value.trim();
+      const type = el.subType.value.trim();
+      const packQty = toPositiveNumber(el.subPackQty.value);
+      const unitMeasure = el.subUnitMeasure.value.trim();
+      const purchasePrice = toPositiveNumber(el.subPurchasePrice.value);
+      const usedQty = toPositiveNumber(el.subUsedQty.value);
+      const unitCost = calculateUnitCost(packQty, purchasePrice);
+
+      if (!name) return;
+
+      state.currentSubproducts.push({
+        id: crypto.randomUUID(),
+        name,
+        type,
+        packQty,
+        unitMeasure,
+        purchasePrice,
+        usedQty,
+        unitCost
+      });
+
+      el.subName.value = "";
+      el.subType.value = "";
+      el.subPackQty.value = "1";
+      el.subUnitMeasure.value = "";
+      el.subPurchasePrice.value = "0";
+      el.subUsedQty.value = "1";
+      renderEditor();
+    };
+
+    const addModalSubproduct = () => {
+      const name = el.modalSubName.value.trim();
+      const type = el.modalSubType.value.trim();
+      const packQty = toPositiveNumber(el.modalSubPackQty.value);
+      const unitMeasure = el.modalSubUnitMeasure.value.trim();
+      const purchasePrice = toPositiveNumber(el.modalSubPurchasePrice.value);
+      const usedQty = toPositiveNumber(el.modalSubUsedQty.value);
+      const unitCost = calculateUnitCost(packQty, purchasePrice);
+
+      if (!name) return;
+
+      state.modalSubproducts.push({
+        id: crypto.randomUUID(),
+        name,
+        type,
+        packQty,
+        unitMeasure,
+        purchasePrice,
+        usedQty,
+        unitCost
+      });
+
+      el.modalSubName.value = "";
+      el.modalSubType.value = "";
+      el.modalSubPackQty.value = "1";
+      el.modalSubUnitMeasure.value = "";
+      el.modalSubPurchasePrice.value = "0";
+      el.modalSubUsedQty.value = "1";
+      renderModalSubproductList();
+      renderModalSummary();
+    };
+
+    const removeSubproduct = (id) => {
+      state.currentSubproducts = state.currentSubproducts.filter((item) => item.id !== id);
+      renderEditor();
+    };
+
+    const removeModalSubproduct = (id) => {
+      state.modalSubproducts = state.modalSubproducts.filter((item) => item.id !== id);
+      renderModalSubproductList();
+      renderModalSummary();
+    };
+
+    const buildProductFromForm = () => ({
+      id: state.editingId || crypto.randomUUID(),
+      name: el.productName.value.trim(),
+      laborHours: toPositiveNumber(el.laborHours.value),
+      laborRate: toPositiveNumber(el.laborRate.value),
+      subproducts: state.currentSubproducts.map((item) => ({
+        ...item,
+        unitCost: calculateUnitCost(item.packQty, item.purchasePrice)
+      }))
+    });
+
+    const buildProductFromModal = () => ({
+      id: state.modalEditingId || crypto.randomUUID(),
+      name: el.modalProductName.value.trim(),
+      laborHours: toPositiveNumber(el.modalLaborHours.value),
+      laborRate: toPositiveNumber(el.modalLaborRate.value),
+      subproducts: state.modalSubproducts.map((item) => ({
+        ...item,
+        unitCost: calculateUnitCost(item.packQty, item.purchasePrice)
+      }))
+    });
+
+    const upsertProductRemote = async (product) => {
+      try {
+        await fetch(PRODUCTS_API, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(product)
+        });
+      } catch (_) {}
+    };
+
+    const deleteProductRemote = async (id) => {
+      try {
+        await fetch(`${PRODUCTS_API}?id=${encodeURIComponent(id)}`, { method: "DELETE" });
+      } catch (_) {}
+    };
+
+    const saveProduct = async () => {
+      const product = buildProductFromForm();
+      if (!product.name) return;
+
+      const existingIndex = state.products.findIndex((item) => item.id === product.id);
+      if (existingIndex >= 0) {
+        state.products[existingIndex] = product;
+      } else {
+        state.products.push(product);
+      }
+
+      saveToStorage();
+      upsertProductRemote(product);
+      clearForm();
+    };
+
+    const saveProductFromModal = async () => {
+      const product = buildProductFromModal();
+      if (!product.name) return;
+
+      const existingIndex = state.products.findIndex((item) => item.id === product.id);
+      if (existingIndex >= 0) {
+        state.products[existingIndex] = product;
+      } else {
+        state.products.push(product);
+      }
+
+      saveToStorage();
+      upsertProductRemote(product);
+      renderProducts();
+    };
+
+    const deleteProduct = async (id) => {
+      state.products = state.products.filter((item) => item.id !== id);
+      if (state.editingId === id) {
+        clearForm();
+      } else {
+        renderEditor();
+      }
+      saveToStorage();
+      deleteProductRemote(id);
+    };
+
+    const openProductModal = (id) => {
+      const product = state.products.find((item) => item.id === id);
+      if (!product) return;
+
+      state.modalEditingId = product.id;
+      state.modalSubproducts = product.subproducts.map((sub) => ({
+        ...sub,
+        unitCost: calculateUnitCost(sub.packQty, sub.purchasePrice)
+      }));
+      el.modalProductName.value = product.name;
+      el.modalLaborHours.value = String(product.laborHours);
+      el.modalLaborRate.value = String(product.laborRate);
+      renderModalSubproductList();
+      renderModalSummary();
+      el.productModal.classList.add("active");
+      el.productModal.setAttribute("aria-hidden", "false");
+    };
+
+    const upsertInventoryItem = async (item) => {
+      try {
+        const response = await fetch(INVENTORY_API, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(item)
+        });
+        if (response.ok) {
+          const data = await response.json();
+          const nextItem = data.item || item;
+          state.inventory = normalizeInventory(state.inventory.filter((entry) => entry.name !== nextItem.name).concat(nextItem));
+          renderInventoryOptions();
+          renderInventoryList();
+          return;
+        }
+      } catch (_) {}
+
+      const custom = getCustomInventoryFromStorage();
+      const existingIndex = custom.findIndex((entry) => entry.name.toLowerCase() === item.name.toLowerCase());
+      if (existingIndex >= 0) {
+        custom[existingIndex] = { ...custom[existingIndex], ...item };
+      } else {
+        custom.push(item);
+      }
+      setCustomInventoryInStorage(custom);
+      const deleted = getDeletedInventoryFromStorage().filter((name) => name.toLowerCase() !== item.name.toLowerCase());
+      setDeletedInventoryInStorage(deleted);
+      state.inventory = normalizeInventory(state.inventory.filter((entry) => entry.name.toLowerCase() !== item.name.toLowerCase()).concat(item));
+      renderInventoryOptions();
+      renderInventoryList();
+    };
+
+    const deleteInventoryItem = async (name) => {
+      if (!name) return;
+      try {
+        const response = await fetch(`${INVENTORY_API}?name=${encodeURIComponent(name)}`, { method: "DELETE" });
+        if (response.ok) {
+          state.inventory = state.inventory.filter((entry) => entry.name.toLowerCase() !== name.toLowerCase());
+          renderInventoryOptions();
+          renderInventoryList();
+          return;
+        }
+      } catch (_) {}
+
+      const custom = getCustomInventoryFromStorage().filter((entry) => entry.name.toLowerCase() !== name.toLowerCase());
+      setCustomInventoryInStorage(custom);
+      const deleted = getDeletedInventoryFromStorage();
+      if (!deleted.some((entry) => entry.toLowerCase() === name.toLowerCase())) {
+        deleted.push(name);
+      }
+      setDeletedInventoryInStorage(deleted);
+      state.inventory = state.inventory.filter((entry) => entry.name.toLowerCase() !== name.toLowerCase());
+      renderInventoryOptions();
+      renderInventoryList();
+    };
+
+    const saveInventoryItem = async () => {
+      const name = el.subName.value.trim();
+      if (!name) return;
+      const item = {
+        name,
+        type: el.subType.value.trim(),
+        packQty: toPositiveNumber(el.subPackQty.value),
+        unitMeasure: el.subUnitMeasure.value.trim(),
+        purchasePrice: toPositiveNumber(el.subPurchasePrice.value)
+      };
+      upsertInventoryItem(item);
+    };
+
+    el.subName.addEventListener("input", handleInventoryChange);
+    el.subName.addEventListener("change", handleInventoryChange);
+    el.modalSubName.addEventListener("input", handleModalInventoryChange);
+    el.modalSubName.addEventListener("change", handleModalInventoryChange);
+    el.addSubBtn.addEventListener("click", addSubproduct);
+    el.modalAddSubBtn.addEventListener("click", addModalSubproduct);
+    el.saveInventoryBtn.addEventListener("click", saveInventoryItem);
+    el.saveBtn.addEventListener("click", saveProduct);
+    el.saveProductModalBtn.addEventListener("click", saveProductFromModal);
+    el.newBtn.addEventListener("click", clearForm);
+    el.laborHours.addEventListener("input", renderSummary);
+    el.laborRate.addEventListener("input", renderSummary);
+    el.modalLaborHours.addEventListener("input", renderModalSummary);
+    el.modalLaborRate.addEventListener("input", renderModalSummary);
+
+    document.addEventListener("click", (event) => {
+      const target = event.target;
+      if (!(target instanceof HTMLElement)) return;
+
+      const removeSubId = target.dataset.removeSub;
+      if (removeSubId) {
+        removeSubproduct(removeSubId);
+        return;
+      }
+
+      const deleteProductId = target.dataset.deleteProduct;
+      if (deleteProductId) {
+        deleteProduct(deleteProductId);
+        return;
+      }
+
+      const editProductId = target.dataset.editProduct;
+      if (editProductId) {
+        openProductModal(editProductId);
+      }
+    });
+
+    el.modalSubproductList.addEventListener("click", (event) => {
+      const target = event.target;
+      if (!(target instanceof HTMLElement)) return;
+      const removeId = target.dataset.removeModalSub;
+      if (removeId) {
+        removeModalSubproduct(removeId);
+      }
+    });
+
+    el.inventoryList.addEventListener("click", (event) => {
+      const target = event.target;
+      if (!(target instanceof HTMLElement)) return;
+      const action = target.dataset.action;
+      const key = target.dataset.key;
+      if (!action || !key) return;
+      const name = decodeKey(key);
+      if (action === "delete") {
+        deleteInventoryItem(name);
+        return;
+      }
+      if (action === "save") {
+        const input = el.inventoryList.querySelector(`[data-price-key="${key}"]`);
+        if (!(input instanceof HTMLInputElement)) return;
+        const item = state.inventory.find((entry) => entry.name.toLowerCase() === name.toLowerCase());
+        if (!item) return;
+        const updated = { ...item, purchasePrice: toPositiveNumber(input.value) };
+        upsertInventoryItem(updated);
+      }
+    });
+
+    const applyTheme = (value) => {
+      if (value === "dark") {
+        document.documentElement.setAttribute("data-theme", "dark");
+        el.themeToggle.textContent = "Modo claro";
+      } else {
+        document.documentElement.removeAttribute("data-theme");
+        el.themeToggle.textContent = "Modo oscuro";
+      }
+    };
+
+    const toggleTheme = () => {
+      const isDark = document.documentElement.getAttribute("data-theme") === "dark";
+      const next = isDark ? "light" : "dark";
+      localStorage.setItem("theme_mode", next);
+      applyTheme(next);
+    };
+
+    el.themeToggle.addEventListener("click", toggleTheme);
+
+    const openInventoryModal = () => {
+      el.inventoryModal.classList.add("active");
+      el.inventoryModal.setAttribute("aria-hidden", "false");
+    };
+
+    const closeInventoryModal = () => {
+      el.inventoryModal.classList.remove("active");
+      el.inventoryModal.setAttribute("aria-hidden", "true");
+    };
+
+    const closeProductModal = () => {
+      el.productModal.classList.remove("active");
+      el.productModal.setAttribute("aria-hidden", "true");
+      state.modalEditingId = null;
+      state.modalSubproducts = [];
+    };
+
+    el.openInventoryBtn.addEventListener("click", openInventoryModal);
+    el.closeInventoryBtn.addEventListener("click", closeInventoryModal);
+    el.closeInventoryBtnFooter.addEventListener("click", closeInventoryModal);
+    el.closeProductBtn.addEventListener("click", closeProductModal);
+    el.closeProductBtnFooter.addEventListener("click", closeProductModal);
+
+    el.inventoryModal.addEventListener("click", (event) => {
+      if (event.target === el.inventoryModal) {
+        closeInventoryModal();
+      }
+    });
+
+    el.productModal.addEventListener("click", (event) => {
+      if (event.target === el.productModal) {
+        closeProductModal();
+      }
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") {
+        closeInventoryModal();
+        closeProductModal();
+      }
+    });
+
+    const loadInventory = async () => {
+      try {
+        const response = await fetch(INVENTORY_API);
+        if (response.ok) {
+          const data = await response.json();
+          state.inventory = normalizeInventory(Array.isArray(data.items) ? data.items : []);
+          renderInventoryOptions();
+          renderInventoryList();
+          return;
+        }
+      } catch (_) {
+      }
+      try {
+        const response = await fetch(encodeURI(INVENTORY_FILE));
+        if (response.ok) {
+          const text = await response.text();
+          const base = parseInventoryCsv(text);
+          const custom = getCustomInventoryFromStorage();
+          const deleted = getDeletedInventoryFromStorage();
+          state.inventory = normalizeInventory(base.concat(custom)).filter(
+            (item) => !deleted.some((name) => name.toLowerCase() === item.name.toLowerCase())
+          );
+          renderInventoryOptions();
+          renderInventoryList();
+          return;
+        }
+      } catch (_) {}
+      const deleted = getDeletedInventoryFromStorage();
+      state.inventory = normalizeInventory(getCustomInventoryFromStorage()).filter(
+        (item) => !deleted.some((name) => name.toLowerCase() === item.name.toLowerCase())
+      );
+      renderInventoryOptions();
+      renderInventoryList();
+    };
+
+    const start = async () => {
+      const savedTheme = localStorage.getItem("theme_mode") || "light";
+      applyTheme(savedTheme);
+      await loadProducts();
+      await loadInventory();
+      renderEditor();
+    };
+
+    start();
+  </script>
+</body>
+</html>
