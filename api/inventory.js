@@ -49,6 +49,39 @@ const sendJson = (res, status, data) => {
   res.end(JSON.stringify(data));
 };
 
+const readBody = (req) =>
+  new Promise((resolve) => {
+    if (req.body) {
+      if (typeof req.body === "object") {
+        resolve(req.body);
+        return;
+      }
+      try {
+        resolve(JSON.parse(req.body));
+        return;
+      } catch (_) {
+        resolve({});
+        return;
+      }
+    }
+    let data = "";
+    req.on("data", (chunk) => {
+      data += chunk;
+    });
+    req.on("end", () => {
+      if (!data) {
+        resolve({});
+        return;
+      }
+      try {
+        resolve(JSON.parse(data));
+      } catch (_) {
+        resolve({});
+      }
+    });
+    req.on("error", () => resolve({}));
+  });
+
 module.exports = async (req, res) => {
   if (req.method === "GET") {
     const base = readCsvInventory();
@@ -62,12 +95,7 @@ module.exports = async (req, res) => {
   }
 
   if (req.method === "POST") {
-    let body = {};
-    try {
-      body = JSON.parse(req.body || "{}");
-    } catch (_) {
-      body = {};
-    }
+    const body = await readBody(req);
 
     const name = String(body.name || "").trim();
     if (!name) {
